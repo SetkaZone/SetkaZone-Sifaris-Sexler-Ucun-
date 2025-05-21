@@ -431,7 +431,52 @@
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
-  </style>
+  
+@keyframes fadeScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+#calculatorForm.show-animated {
+  animation: fadeScaleIn 0.4s ease-out;
+}
+#formOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+}
+#formClose {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff004c;
+  z-index: 1001;
+}
+#orderButton {
+  background-image: linear-gradient(135deg, #28a745, #66e56f) !important;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  border: 3px solid white;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+  position: sticky;
+  top: 10px;
+  z-index: 99;
+}
+
+</style>
 </head>
 <body>
 
@@ -469,16 +514,27 @@
 </div>
 
 <button id="orderButton">Sifariş üçün klikləyin</button>
+<div id="formOverlay" onclick="hideCalculator()"></div>
 
 
 <script>
-document.getElementById('orderButton').addEventListener('click', function() {
-    document.getElementById('calculatorForm').style.display = 'block';
-    window.scrollTo(0, 0);
-  });
+document.getElementById('orderButton').addEventListener('click', function () {
+  const form = document.getElementById('calculatorForm');
+  const overlay = document.getElementById('formOverlay');
+  form.style.display = 'block';
+  overlay.style.display = 'block';
+  form.classList.add('show-animated');
+});
+function hideCalculator() {
+  const form = document.getElementById('calculatorForm');
+  const overlay = document.getElementById('formOverlay');
+  form.style.display = 'none';
+  overlay.style.display = 'none';
+}
 </script>
 
 <div id="calculatorForm" style="display:none;">
+  <span id="formClose" onclick="hideCalculator()">&times;</span>
     <div class="notice">Qeyd: Çatdırılma və quraşdırılma qiymətə daxil deyil!</div>
     <div class="notice">Qeyd: 1-dən çox sifariş üçün formdan bir neçə dəfə istifadə edin və ya bizlə əlaqə saxlayın!</div>
 
@@ -784,17 +840,22 @@ document.addEventListener("DOMContentLoaded", function () {
 function openVideoModal() {
   const modal = document.getElementById("videoModal");
   modal.classList.add("show");
+  document.body.style.overflow = "hidden";
   const video = document.getElementById("measureVideo");
   video.currentTime = 0;
   video.play();
 }
-
 function closeVideoModal() {
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("measureVideo");
   modal.classList.remove("show");
+  document.body.style.overflow = "";
   video.pause();
   video.currentTime = 0;
+  const form = document.getElementById("calculatorForm");
+  if (form) {
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 </script>
 </body>
